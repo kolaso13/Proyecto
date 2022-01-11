@@ -1,5 +1,5 @@
 @import "../node_modules/bootstrap/scss/bootstrap"
-
+@import url(https://fonts.googleapis.com/css?family=PT+Sans+Caption:400,700&subset=latin-ext,cyrillic)
 
 body
     display: flex
@@ -13,11 +13,26 @@ body
     width: 10%
     height: 100vh
 
+
 #map
     height: 500px
     width: 100%
-
+    
 #Contenido
     width: 100%
-    height: 100vh
+    height: auto
     margin-top: 30px
+    display: grid
+    grid-template-columns: 2fr 2fr
+    grid-gap: 10px
+        
+.tarjetas
+    border: solid black 1px
+    border-radius: 20px
+    height: 200px
+    width: 100%
+    box-shadow: 3px 2px 2px black
+    margin-top: 10px
+    p
+        margin-left: 5px
+        font-size: 20px
