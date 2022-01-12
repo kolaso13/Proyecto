@@ -64,7 +64,7 @@ function Agregar(e) {
     //Hacemos los filtros draggables
     $(function () {
         $(".icono").draggable({ revert: "valid", revert: true });
-
+        
         $(".tarjetas").droppable({
             classes: {
                 "ui-droppable-active": "ui-state-active",
@@ -74,7 +74,7 @@ function Agregar(e) {
                 $(this)
                     .addClass("ui-state-highlight")
                     .find("p")
-                    .html("Dropped!");
+                    .html("Dropped");
             }
         });
     });
