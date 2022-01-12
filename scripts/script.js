@@ -16,16 +16,25 @@ var BlackIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
+//Creamos la balizas
 for (i = 0; i < aValizas.length; i++) {
     var Valizas = L.marker([aValizas[i].GpxY, aValizas[i].GpxX]).addTo(Mapa);
-    Valizas.bindPopup(`${aValizas[i].Id}`);
+    Valizas.bindPopup(`${aValizas[i].Nombre}`);
     Valizas.on("click", Agregar);
 }
 
+//Funcion que agrega un div cuando se hace clic en un marcador
 function Agregar(e) {
     var ImprimirDiv = "";
-
-    var sObtenerID = e.target.getPopup().getContent();
+    //Cogemos el id de las balizas
+    var sObtenerNombre = e.target.getPopup().getContent();
+    for(i = 0; i < aValizas.length; i++) {
+        if(sObtenerNombre == aValizas[i].Nombre){
+            var sObtenerID = aValizas[i].Id;
+            break;
+        }
+    }
+    //Comprobamos que el ID seleccionado no esta ya
     for (i = 0; i < aId.length; i++) {
         if (aId[i] == sObtenerID) {
             bexiste = true;
@@ -36,6 +45,8 @@ function Agregar(e) {
         }
     }
     console.log(sObtenerID);
+
+    //Si no existe imprimimos una tarjeta y añadimos al array de los IDs el nuevo
     if (!bexiste) {
         e.target.setIcon(BlackIcon);
         aId.push(sObtenerID);
@@ -47,24 +58,26 @@ function Agregar(e) {
                             </div>`;
             }
         }
-        $(function () {
-            $(".icono").draggable({ revert: "valid", revert: true });
-
-            $(".tarjetas").droppable({
-                classes: {
-                    "ui-droppable-active": "ui-state-active",
-                    "ui-droppable-hover": "ui-state-hover"
-                },
-                drop: function (event, ui) {
-                    $(this)
-                        .addClass("ui-state-highlight")
-                        .find("p")
-                        .html("Dropped!");
-                }
-            });
-        });
         document.getElementById("Contenido").innerHTML += ImprimirDiv;
     }
+
+    //Hacemos los filtros draggables
+    $(function () {
+        $(".icono").draggable({ revert: "valid", revert: true });
+
+        $(".tarjetas").droppable({
+            classes: {
+                "ui-droppable-active": "ui-state-active",
+                "ui-droppable-hover": "ui-state-hover"
+            },
+            drop: function (event, ui) {
+                $(this)
+                    .addClass("ui-state-highlight")
+                    .find("p")
+                    .html("Dropped!");
+            }
+        });
+    });
 }
 
 
