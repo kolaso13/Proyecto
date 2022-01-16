@@ -28,8 +28,8 @@ function Agregar(e) {
     var ImprimirDiv = "";
     //Cogemos el id de las balizas
     var sObtenerNombre = e.target.getPopup().getContent();
-    for(i = 0; i < aValizas.length; i++) {
-        if(sObtenerNombre == aValizas[i].Nombre){
+    for (i = 0; i < aValizas.length; i++) {
+        if (sObtenerNombre == aValizas[i].Nombre) {
             var sObtenerID = aValizas[i].Id;
             break;
         }
@@ -48,12 +48,14 @@ function Agregar(e) {
 
     //Si no existe imprimimos una tarjeta y añadimos al array de los IDs el nuevo
     if (!bexiste) {
+        //Cambiamos el color
         e.target.setIcon(BlackIcon);
         aId.push(sObtenerID);
         for (i = 0; i < aValizas.length; i++) {
             if (aValizas[i].Id == sObtenerID) {
                 sID = aValizas[i].Id;
-                ImprimirDiv += `<div class="tarjetas col" id="opcion${sID}">
+                ImprimirDiv += `<div class="tarjetas col" id="${sID}">
+                                <button type="button" class="btn-close btncerrar" aria-label="Close"></button>
                                 <p>${aValizas[i].Nombre}</p>
                             </div>`;
             }
@@ -61,10 +63,22 @@ function Agregar(e) {
         document.getElementById("Contenido").innerHTML += ImprimirDiv;
     }
 
+    //Eliminar el div al hacer click en la x
+    $(".btn-close").click(function (e) {
+        var id = e.target.closest(".tarjetas").id;
+        for(i=0;i<aId.length;i++){
+            if(aId[i]==id){
+                aId.splice(i,1);
+                console.log("Borrado");
+            }
+        }
+        $(this).closest(".tarjetas").remove();
+    })
+
     //Hacemos los filtros draggables
     $(function () {
         $(".icono").draggable({ revert: "valid", revert: true });
-        
+
         $(".tarjetas").droppable({
             classes: {
                 "ui-droppable-active": "ui-state-active",
