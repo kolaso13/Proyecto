@@ -1,10 +1,13 @@
 import L from 'leaflet';
 
-var aValizas = JSON.parse(sValizas);
+//Declaramos las variables
+aValizas = JSON.parse(sValizas);
 var aId = new Array();
 var aMarcadores = new Array();
 var bexiste;
 var Mapa = L.map('map').setView([43.34578351332376, -1.7965434243182008], 11);
+
+
 
 L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(Mapa);
 
@@ -34,11 +37,16 @@ for (i = 0; i < aValizas.length; i++) {
     aMarcadores.push(Valizas);
 }
 
+RevisarLocalStorage();
+
 //Funcion que agrega un div cuando se hace clic en un marcador
 function Agregar(e) {
-    var ImprimirDiv = "";
+    var sImprimirDiv = "";
+
     //Cogemos el id de las balizas
     var sObtenerNombre = e.target.getPopup().getContent();
+    console.log(sObtenerNombre);
+
     for (i = 0; i < aValizas.length; i++) {
         if (sObtenerNombre == aValizas[i].Nombre) {
             var sObtenerID = aValizas[i].Id;
@@ -59,6 +67,7 @@ function Agregar(e) {
 
         console.log(sObtenerID);
 
+        localStorage.setItem(sObtenerID, sObtenerNombre);
         //Si no existe imprimimos una tarjeta y añadimos al array de los IDs el nuevo
         if (!bexiste) {
             //Cambiamos el color
@@ -67,7 +76,7 @@ function Agregar(e) {
             for (i = 0; i < aValizas.length; i++) {
                 if (aValizas[i].Id == sObtenerID) {
                     sID = aValizas[i].Id;
-                    ImprimirDiv += `<div class="tarjetas col" id="${sID}">
+                    sImprimirDiv += `<div class="tarjetas col" id="${sID}">
                                 <button type="button" class="btn-close btncerrar" aria-label="Close"></button>
                                 <h4>${aValizas[i].Nombre}</h4>
                                 <div class="divsDatos" id="TemperaturaOculto">
@@ -86,26 +95,35 @@ function Agregar(e) {
                             </div>`;
                 }
             }
-            document.getElementById("Contenido").innerHTML += ImprimirDiv;
+            document.getElementById("Contenido").innerHTML += sImprimirDiv;
         }
     }
+    Jquery();
+}
+
+function Jquery(){
     //Eliminar el div al hacer click en la x
     $(".btn-close").click(function (e) {
         var id = e.target.closest(".tarjetas").id;
+        localStorage.removeItem(id);
         for (i = 0; i < aId.length; i++) {
             if (aId[i] == id) {
                 aId.splice(i, 1);
                 console.log("Borrado");
+
             }
         }
-        for(i=0;i<aMarcadores.length;i++){
-            if(aMarcadores[i].options.idMarcador==id){
+        for (i = 0; i < aMarcadores.length; i++) {
+            if (aMarcadores[i].options.idMarcador == id) {
                 aMarcadores[i].setIcon(BlueIcon);
                 console.log("Cambio");
             }
         }
         $(this).closest(".tarjetas").remove();
     })
+    $(function () {
+        $("#Contenido").sortable();
+    });
 
     //Hacemos los filtros draggables
     $(function () {
@@ -125,4 +143,38 @@ function Agregar(e) {
     });
 }
 
+function RevisarLocalStorage() {
+    var sImprimirLocalStorage = "";
+    allaves = Object.keys(localStorage);
+    var aNombre = new Array();
 
+    for (i = 0; i < allaves.length; i++) {
+        for (j = 0; j < aValizas.length; j++) {
+            if (aValizas[j].Id == allaves[i]) {
+                aNombre[i] = aValizas[j].Nombre;
+            }
+        }
+    }
+    console.log(aNombre);
+
+    for (i = 0; i < allaves.length; i++) {
+        sImprimirLocalStorage += `<div class="tarjetas col" id="${allaves[i]}">
+                                <button type="button" class="btn-close btncerrar" aria-label="Close"></button>
+                                <h4>${aNombre[i]}</h4>
+                                <div class="divsDatos" id="TemperaturaOculto">
+                                    <p>Temperatura:</p>
+                                </div>
+                                <div class="divsDatos" id="HumedadOculto">
+                                    <p>Humedad:</p>
+                                </div>
+                                <div class="divsDatos" id="LluviaOculto">
+                                    <p>Precipitación:</p>
+                                </div>
+                                <div class="divsDatos" id="VientoOculto">
+                                    <p>Velocidad del Viento:</p>
+                                </div>
+                            </div>`;
+    }
+    document.getElementById("Contenido").innerHTML += sImprimirLocalStorage;
+    Jquery();
+}
