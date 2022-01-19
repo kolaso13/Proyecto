@@ -101,7 +101,7 @@ function Agregar(e) {
     Jquery();
 }
 
-function Jquery(){
+function Jquery() {
     //Eliminar el div al hacer click en la x
     $(".btn-close").click(function (e) {
         var id = e.target.closest(".tarjetas").id;
@@ -155,8 +155,20 @@ function RevisarLocalStorage() {
             }
         }
     }
-    console.log(aNombre);
+    for (i = 0; i < allaves.length; i++) {
+        aId.push(allaves[i]);
+    }
+    
+    for (i = 0; i < aId.length; i++) {
+        for (j = 0; j < aMarcadores.length; j++) {
+            console.log("Hola");
+            if (aMarcadores[j].options.idMarcador == aId[i]) {
+                aMarcadores[j].setIcon(BlackIcon);
+            }
+        }
+    }
 
+    console.log(aId);
     for (i = 0; i < allaves.length; i++) {
         sImprimirLocalStorage += `<div class="tarjetas col" id="${allaves[i]}">
                                 <button type="button" class="btn-close btncerrar" aria-label="Close"></button>
