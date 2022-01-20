@@ -79,20 +79,22 @@ function Agregar(e) {
                     sImprimirDiv += `<div class="tarjetas col" id="${sID}">
                                 <button type="button" class="btn-close btncerrar" aria-label="Close"></button>
                                 <h4>${aValizas[i].Nombre}</h4>
-                                <div class="divsDatos" id="TemperaturaOculto">
-                                    <p>Temperatura:</p>
+                                <div id="contenedorDatos">
+                                    <div class="divsDatos MostrarPrincipio" id="TemperaturaOculto">
+                                        <h3>Temperatura</h3>
+                                    </div>
+                                    <div class="divsDatos MostrarPrincipio" id="HumedadOculto">
+                                        <h3>Humedad</h3>
+                                    </div>
+                                    <div class="divsDatos" id="LluviaOculto">
+                                        <h3>Precipitación</h3>
+                                    </div>
+                                    <div class="divsDatos" id="VientoOculto">
+                                        <h3>Velocidad del Viento</h3>
+                                    </div>
                                 </div>
-                                <div class="divsDatos" id="HumedadOculto">
-                                    <p>Humedad:</p>
-                                </div>
-                                <div class="divsDatos" id="LluviaOculto">
-                                    <p>Precipitación:</p>
-                                </div>
-                                <div class="divsDatos" id="VientoOculto">
-                                    <p>Velocidad del Viento:</p>
-                                </div>
-                                
                             </div>`;
+                            
                 }
             }
             document.getElementById("Contenido").innerHTML += sImprimirDiv;
@@ -102,28 +104,40 @@ function Agregar(e) {
 }
 
 function Jquery() {
+    //Apareceran al cargar la pagina
+    $(".MostrarPrincipio").removeClass("divsDatos");
+    $(".MostrarPrincipio").addClass("Mostrar");
+
     //Eliminar el div al hacer click en la x
     $(".btn-close").click(function (e) {
         var id = e.target.closest(".tarjetas").id;
+        //Elimina del storage el id
         localStorage.removeItem(id);
+
+        //for para eliminar del array donde guardamos los IDs el id de la tarjeta que hemos cerrado
         for (i = 0; i < aId.length; i++) {
             if (aId[i] == id) {
                 aId.splice(i, 1);
                 console.log("Borrado");
-
             }
         }
+
+        //Cambiamos el icono negro por el azul cuando se cierra la tarjeta
         for (i = 0; i < aMarcadores.length; i++) {
             if (aMarcadores[i].options.idMarcador == id) {
                 aMarcadores[i].setIcon(BlueIcon);
                 console.log("Cambio");
             }
         }
+        //La clase mas cercana a la x la elimina
         $(this).closest(".tarjetas").remove();
     })
+
+    //Funcion para poder desplazar las tarjetas
     $(function () {
         $("#Contenido").sortable();
     });
+
 
     //Hacemos los filtros draggables
     $(function () {
@@ -173,19 +187,20 @@ function RevisarLocalStorage() {
         sImprimirLocalStorage += `<div class="tarjetas col" id="${allaves[i]}">
                                 <button type="button" class="btn-close btncerrar" aria-label="Close"></button>
                                 <h4>${aNombre[i]}</h4>
-                                <div class="divsDatos" id="TemperaturaOculto">
-                                    <p>Temperatura:</p>
+                                <div class="divsDatos MostrarPrincipio" id="TemperaturaOculto">
+                                    <h3>Temperatura</h3>
                                 </div>
-                                <div class="divsDatos" id="HumedadOculto">
-                                    <p>Humedad:</p>
+                                <div class="divsDatos MostrarPrincipio" id="HumedadOculto">
+                                    <h3>Humedad</h3>
                                 </div>
                                 <div class="divsDatos" id="LluviaOculto">
-                                    <p>Precipitación:</p>
+                                    <h3>Precipitación</h3>
                                 </div>
                                 <div class="divsDatos" id="VientoOculto">
-                                    <p>Velocidad del Viento:</p>
+                                    <h3>Velocidad del Viento</h3>
                                 </div>
                             </div>`;
+                            
     }
     document.getElementById("Contenido").innerHTML += sImprimirLocalStorage;
     Jquery();
