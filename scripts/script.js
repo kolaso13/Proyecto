@@ -1,13 +1,11 @@
 import L from 'leaflet';
 
 //Declaramos las variables
-aValizas = JSON.parse(sValizas);
+var aValizas = JSON.parse(sValizas);
 var aId = new Array();
 var aMarcadores = new Array();
-var bexiste;
+var bExiste;
 var Mapa = L.map('map').setView([43.34578351332376, -1.7965434243182008], 11);
-
-
 
 L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(Mapa);
 
@@ -43,10 +41,11 @@ RevisarLocalStorage();
 function Agregar(e) {
     var sImprimirDiv = "";
 
-    //Cogemos el id de las balizas
+    //Cogemos el nombre de las balizas
     var sObtenerNombre = e.target.getPopup().getContent();
     console.log(sObtenerNombre);
 
+    //Con el nombre cogemos el id
     for (i = 0; i < aValizas.length; i++) {
         if (sObtenerNombre == aValizas[i].Nombre) {
             var sObtenerID = aValizas[i].Id;
@@ -57,11 +56,11 @@ function Agregar(e) {
     if (aId.length < 4) {
         for (i = 0; i < aId.length; i++) {
             if (aId[i] == sObtenerID) {
-                bexiste = true;
+                bExiste = true;
                 break;
             }
             else {
-                bexiste = false;
+                bExiste = false;
             }
         }
 
@@ -69,7 +68,7 @@ function Agregar(e) {
 
         localStorage.setItem(sObtenerID, sObtenerNombre);
         //Si no existe imprimimos una tarjeta y añadimos al array de los IDs el nuevo
-        if (!bexiste) {
+        if (!bExiste) {
             //Cambiamos el color
             e.target.setIcon(BlackIcon);
             aId.push(sObtenerID);
@@ -94,7 +93,6 @@ function Agregar(e) {
                                     </div>
                                 </div>
                             </div>`;
-                            
                 }
             }
             document.getElementById("Contenido").innerHTML += sImprimirDiv;
@@ -141,8 +139,10 @@ function Jquery() {
 
     //Hacemos los filtros draggables
     $(function () {
+        //El icono volvera a su posicion
         $(".icono").draggable({ revert: "valid", revert: true });
 
+        //Al soltar los iconos en las tarjetas se añade el parametro correspondiente
         $(".tarjetas").droppable({
             classes: {
                 "ui-droppable-active": "ui-state-active",
@@ -157,11 +157,13 @@ function Jquery() {
     });
 }
 
+//Funcion que  mira en el storage para crear tarjetas al crear la pagina
 function RevisarLocalStorage() {
     var sImprimirLocalStorage = "";
     allaves = Object.keys(localStorage);
     var aNombre = new Array();
 
+    //Cogemos el nombre de la baliza con el id guardado en el storage
     for (i = 0; i < allaves.length; i++) {
         for (j = 0; j < aValizas.length; j++) {
             if (aValizas[j].Id == allaves[i]) {
@@ -169,19 +171,19 @@ function RevisarLocalStorage() {
             }
         }
     }
+    //Lo añadimos al array de los ids
     for (i = 0; i < allaves.length; i++) {
         aId.push(allaves[i]);
     }
-    
+    //Cambiamos la baliza a color negro
     for (i = 0; i < aId.length; i++) {
         for (j = 0; j < aMarcadores.length; j++) {
-            console.log("Hola");
             if (aMarcadores[j].options.idMarcador == aId[i]) {
                 aMarcadores[j].setIcon(BlackIcon);
             }
         }
     }
-
+    //Creamos las tarjetas segun el storage
     console.log(aId);
     for (i = 0; i < allaves.length; i++) {
         sImprimirLocalStorage += `<div class="tarjetas col" id="${allaves[i]}">
