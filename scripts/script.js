@@ -183,6 +183,12 @@ function RevisarLocalStorage() {
             }
         }
     }
+    //Desplegar el mapa
+    $(document).ready(function () {
+        $("#escondermapa").click(function () {
+            $("#map").slideToggle(750);
+        });
+    });
     //Creamos las tarjetas segun el storage
     console.log(aId);
     for (i = 0; i < allaves.length; i++) {
@@ -202,7 +208,7 @@ function RevisarLocalStorage() {
                                     <h3>Velocidad del Viento</h3>
                                 </div>
                             </div>`;
-                            
+
     }
     document.getElementById("Contenido").innerHTML += sImprimirLocalStorage;
     Jquery();
