@@ -103,9 +103,7 @@ function Agregar(e) {
 
 function Jquery() {
     //Apareceran al cargar la pagina
-    $(".MostrarPrincipio").removeClass("divsDatos");
     $(".MostrarPrincipio").addClass("Mostrar");
-
     //Eliminar el div al hacer click en la x
     $(".btn-close").click(function (e) {
         var id = e.target.closest(".tarjetas").id;
@@ -144,14 +142,19 @@ function Jquery() {
 
         //Al soltar los iconos en las tarjetas se añade el parametro correspondiente
         $(".tarjetas").droppable({
-            classes: {
-                "ui-droppable-active": "ui-state-active",
-                "ui-droppable-hover": "ui-state-hover"
-            },
             drop: function (event, ui) {
                 var idFiltros = ui.draggable.attr("id").substring(1);
                 console.log(idFiltros);
-                $(this).find(`#${idFiltros}Oculto`).addClass("Mostrar");
+                
+                if(idFiltros=="Papelera"){
+                    $(this).find(`#TemperaturaOculto`).removeClass("Mostrar");
+                    $(this).find(`#HumedadOculto`).removeClass("Mostrar");
+                    $(this).find(`#LluviaOculto`).removeClass("Mostrar");
+                    $(this).find(`#VientoOculto`).removeClass("Mostrar");
+                }
+                else{
+                    $(this).find(`#${idFiltros}Oculto`).addClass("Mostrar");
+                }
             }
         });
     });
@@ -183,7 +186,7 @@ function RevisarLocalStorage() {
             }
         }
     }
-    //Desplegar el mapa
+    //Desplegar/Ocultar el mapa
     $(document).ready(function () {
         $("#escondermapa").click(function () {
             $("#map").slideToggle(750);
