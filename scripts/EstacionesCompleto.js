@@ -1,4 +1,4 @@
-var sValizas=`
+var sBalizas=`
 [
     {
         "Id": "B094",

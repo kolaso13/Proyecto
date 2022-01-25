@@ -1,7 +1,7 @@
 import L from 'leaflet';
 
 //Declaramos las variables
-var aValizas = JSON.parse(sValizas);
+var aBalizas = JSON.parse(sBalizas);
 var aId = new Array();
 var aMarcadores = new Array();
 var bExiste;
@@ -28,11 +28,11 @@ var BlueIcon = new L.Icon({
 });
 
 //Creamos la balizas
-for (i = 0; i < aValizas.length; i++) {
-    var Valizas = L.marker([aValizas[i].GpxY, aValizas[i].GpxX], { idMarcador: aValizas[i].Id }).addTo(Mapa);
-    Valizas.bindPopup(`${aValizas[i].Nombre}`);
-    Valizas.on("click", Agregar);
-    aMarcadores.push(Valizas);
+for (i = 0; i < aBalizas.length; i++) {
+    var Balizas = L.marker([aBalizas[i].GpxY, aBalizas[i].GpxX], { idMarcador: aBalizas[i].Id }).addTo(Mapa);
+    Balizas.bindPopup(`${aBalizas[i].Nombre}`);
+    Balizas.on("click", Agregar);
+    aMarcadores.push(Balizas);
 }
 
 RevisarLocalStorage();
@@ -46,9 +46,9 @@ function Agregar(e) {
     console.log(sObtenerNombre);
 
     //Con el nombre cogemos el id
-    for (i = 0; i < aValizas.length; i++) {
-        if (sObtenerNombre == aValizas[i].Nombre) {
-            var sObtenerID = aValizas[i].Id;
+    for (i = 0; i < aBalizas.length; i++) {
+        if (sObtenerNombre == aBalizas[i].Nombre) {
+            var sObtenerID = aBalizas[i].Id;
             break;
         }
     }
@@ -72,12 +72,12 @@ function Agregar(e) {
             //Cambiamos el color
             e.target.setIcon(BlackIcon);
             aId.push(sObtenerID);
-            for (i = 0; i < aValizas.length; i++) {
-                if (aValizas[i].Id == sObtenerID) {
-                    sID = aValizas[i].Id;
+            for (i = 0; i < aBalizas.length; i++) {
+                if (aBalizas[i].Id == sObtenerID) {
+                    sID = aBalizas[i].Id;
                     sImprimirDiv += `<div class="tarjetas col" id="${sID}">
                                 <button type="button" class="btn-close btncerrar" aria-label="Close"></button>
-                                <h4>${aValizas[i].Nombre}</h4>
+                                <h4>${aBalizas[i].Nombre}</h4>
                                 <div id="contenedorDatos">
                                     <div class="divsDatos MostrarPrincipio" id="TemperaturaOculto">
                                         <h3>Temperatura</h3>
@@ -168,9 +168,9 @@ function RevisarLocalStorage() {
 
     //Cogemos el nombre de la baliza con el id guardado en el storage
     for (i = 0; i < allaves.length; i++) {
-        for (j = 0; j < aValizas.length; j++) {
-            if (aValizas[j].Id == allaves[i]) {
-                aNombre[i] = aValizas[j].Nombre;
+        for (j = 0; j < aBalizas.length; j++) {
+            if (aBalizas[j].Id == allaves[i]) {
+                aNombre[i] = aBalizas[j].Nombre;
             }
         }
     }
@@ -216,3 +216,4 @@ function RevisarLocalStorage() {
     document.getElementById("Contenido").innerHTML += sImprimirLocalStorage;
     Jquery();
 }
+
