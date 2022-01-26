@@ -66,12 +66,14 @@ function Agregar(e) {
 
         console.log(sObtenerID);
 
-        localStorage.setItem(sObtenerID, sObtenerNombre);
         //Si no existe imprimimos una tarjeta y añadimos al array de los IDs el nuevo
         if (!bExiste) {
             //Cambiamos el color
             e.target.setIcon(BlackIcon);
             aId.push(sObtenerID);
+            //Añadimos al localstorage el array
+            localStorage.IDs=JSON.stringify(aId);
+            
             for (i = 0; i < aBalizas.length; i++) {
                 if (aBalizas[i].Id == sObtenerID) {
                     sID = aBalizas[i].Id;
@@ -107,8 +109,6 @@ function Jquery() {
     //Eliminar el div al hacer click en la x
     $(".btn-close").click(function (e) {
         var id = e.target.closest(".tarjetas").id;
-        //Elimina del storage el id
-        localStorage.removeItem(id);
 
         //for para eliminar del array donde guardamos los IDs el id de la tarjeta que hemos cerrado
         for (i = 0; i < aId.length; i++) {
@@ -117,6 +117,9 @@ function Jquery() {
                 console.log("Borrado");
             }
         }
+
+        //Volvemos a subir el array con el id eliminado
+        localStorage.IDs=JSON.stringify(aId);
 
         //Cambiamos el icono negro por el azul cuando se cierra la tarjeta
         for (i = 0; i < aMarcadores.length; i++) {
@@ -163,9 +166,10 @@ function Jquery() {
 //Funcion que  mira en el storage para crear tarjetas al crear la pagina
 function RevisarLocalStorage() {
     var sImprimirLocalStorage = "";
-    allaves = Object.keys(localStorage);
     var aNombre = new Array();
 
+    //Cogemos el array del localstorage
+    allaves=JSON.parse(localStorage.IDs);
     //Cogemos el nombre de la baliza con el id guardado en el storage
     for (i = 0; i < allaves.length; i++) {
         for (j = 0; j < aBalizas.length; j++) {
