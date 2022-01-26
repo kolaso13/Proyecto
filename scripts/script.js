@@ -28,7 +28,7 @@ var BlueIcon = new L.Icon({
 });
 
 //Creamos la balizas
-for (i = 0; i < aBalizas.length; i++) {
+for (var i = 0; i < aBalizas.length; i++) {
     var Balizas = L.marker([aBalizas[i].GpxY, aBalizas[i].GpxX], { idMarcador: aBalizas[i].Id }).addTo(Mapa);
     Balizas.bindPopup(`${aBalizas[i].Nombre}`);
     Balizas.on("click", Agregar);
@@ -76,7 +76,7 @@ function Agregar(e) {
             
             for (i = 0; i < aBalizas.length; i++) {
                 if (aBalizas[i].Id == sObtenerID) {
-                    sID = aBalizas[i].Id;
+                    var sID = aBalizas[i].Id;
                     sImprimirDiv += `<div class="tarjetas col" id="${sID}">
                                 <button type="button" class="btn-close btncerrar" aria-label="Close"></button>
                                 <h4>${aBalizas[i].Nombre}</h4>
@@ -169,10 +169,10 @@ function RevisarLocalStorage() {
     var aNombre = new Array();
 
     //Cogemos el array del localstorage
-    allaves=JSON.parse(localStorage.IDs);
+    var allaves=JSON.parse(localStorage.IDs);
     //Cogemos el nombre de la baliza con el id guardado en el storage
     for (i = 0; i < allaves.length; i++) {
-        for (j = 0; j < aBalizas.length; j++) {
+        for (var j = 0; j < aBalizas.length; j++) {
             if (aBalizas[j].Id == allaves[i]) {
                 aNombre[i] = aBalizas[j].Nombre;
             }
