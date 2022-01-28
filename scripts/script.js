@@ -1,7 +1,6 @@
 import L from 'leaflet';
 
 //Declaramos las variables
-var aBalizas = JSON.parse(sBalizas);
 var aId = new Array();
 var aMarcadores = new Array();
 var bExiste;
@@ -26,82 +25,10 @@ var BlueIcon = new L.Icon({
     popupAnchor: [1, -34],
     shadowSize: [41, 41]
 });
+ObtencionDeDatosAPI();
 
-//Creamos la balizas
-for (var i = 0; i < aBalizas.length; i++) {
-    var Balizas = L.marker([aBalizas[i].GpxY, aBalizas[i].GpxX], { idMarcador: aBalizas[i].Id }).addTo(Mapa);
-    Balizas.bindPopup(`${aBalizas[i].Nombre}`);
-    Balizas.on("click", Agregar);
-    aMarcadores.push(Balizas);
-}
 
-RevisarLocalStorage();
 
-//Funcion que agrega un div cuando se hace clic en un marcador
-function Agregar(e) {
-    var sImprimirDiv = "";
-
-    //Cogemos el nombre de las balizas
-    var sObtenerNombre = e.target.getPopup().getContent();
-    console.log(sObtenerNombre);
-
-    //Con el nombre cogemos el id
-    for (i = 0; i < aBalizas.length; i++) {
-        if (sObtenerNombre == aBalizas[i].Nombre) {
-            var sObtenerID = aBalizas[i].Id;
-            break;
-        }
-    }
-    //Comprobamos que el ID seleccionado no esta ya
-    if (aId.length < 4) {
-        for (i = 0; i < aId.length; i++) {
-            if (aId[i] == sObtenerID) {
-                bExiste = true;
-                break;
-            }
-            else {
-                bExiste = false;
-            }
-        }
-
-        console.log(sObtenerID);
-
-        //Si no existe imprimimos una tarjeta y añadimos al array de los IDs el nuevo
-        if (!bExiste) {
-            //Cambiamos el color
-            e.target.setIcon(BlackIcon);
-            aId.push(sObtenerID);
-            //Añadimos al localstorage el array
-            localStorage.IDs=JSON.stringify(aId);
-            
-            for (i = 0; i < aBalizas.length; i++) {
-                if (aBalizas[i].Id == sObtenerID) {
-                    var sID = aBalizas[i].Id;
-                    sImprimirDiv += `<div class="tarjetas col" id="${sID}">
-                                <button type="button" class="btn-close btncerrar" aria-label="Close"></button>
-                                <h4>${aBalizas[i].Nombre}</h4>
-                                <div id="contenedorDatos">
-                                    <div class="divsDatos MostrarPrincipio" id="TemperaturaOculto">
-                                        <h3>Temperatura</h3>
-                                    </div>
-                                    <div class="divsDatos MostrarPrincipio" id="HumedadOculto">
-                                        <h3>Humedad</h3>
-                                    </div>
-                                    <div class="divsDatos" id="LluviaOculto">
-                                        <h3>Precipitación</h3>
-                                    </div>
-                                    <div class="divsDatos" id="VientoOculto">
-                                        <h3>Velocidad del Viento</h3>
-                                    </div>
-                                </div>
-                            </div>`;
-                }
-            }
-            document.getElementById("Contenido").innerHTML += sImprimirDiv;
-        }
-    }
-    Jquery();
-}
 
 function Jquery() {
     //Apareceran al cargar la pagina
@@ -119,7 +46,7 @@ function Jquery() {
         }
 
         //Volvemos a subir el array con el id eliminado
-        localStorage.IDs=JSON.stringify(aId);
+        localStorage.IDs = JSON.stringify(aId);
 
         //Cambiamos el icono negro por el azul cuando se cierra la tarjeta
         for (i = 0; i < aMarcadores.length; i++) {
@@ -148,14 +75,14 @@ function Jquery() {
             drop: function (event, ui) {
                 var idFiltros = ui.draggable.attr("id").substring(1);
                 console.log(idFiltros);
-                
-                if(idFiltros=="Papelera"){
+
+                if (idFiltros == "Papelera") {
                     $(this).find(`#TemperaturaOculto`).removeClass("Mostrar");
                     $(this).find(`#HumedadOculto`).removeClass("Mostrar");
                     $(this).find(`#LluviaOculto`).removeClass("Mostrar");
                     $(this).find(`#VientoOculto`).removeClass("Mostrar");
                 }
-                else{
+                else {
                     $(this).find(`#${idFiltros}Oculto`).addClass("Mostrar");
                 }
             }
@@ -164,12 +91,12 @@ function Jquery() {
 }
 
 //Funcion que  mira en el storage para crear tarjetas al crear la pagina
-function RevisarLocalStorage() {
+function RevisarLocalStorage(aBalizas) {
     var sImprimirLocalStorage = "";
     var aNombre = new Array();
 
     //Cogemos el array del localstorage
-    var allaves=JSON.parse(localStorage.IDs);
+    var allaves = JSON.parse(localStorage.IDs);
     //Cogemos el nombre de la baliza con el id guardado en el storage
     for (i = 0; i < allaves.length; i++) {
         for (var j = 0; j < aBalizas.length; j++) {
@@ -201,18 +128,22 @@ function RevisarLocalStorage() {
     for (i = 0; i < allaves.length; i++) {
         sImprimirLocalStorage += `<div class="tarjetas col" id="${allaves[i]}">
                                 <button type="button" class="btn-close btncerrar" aria-label="Close"></button>
-                                <h4>${aNombre[i]}</h4>
+                                <h4>${aBalizas[i].nombre}</h4>
                                 <div class="divsDatos MostrarPrincipio" id="TemperaturaOculto">
                                     <h3>Temperatura</h3>
+                                    <p id="DatosObtenidos">${aBalizas[i].temperatura}°C</p>
                                 </div>
                                 <div class="divsDatos MostrarPrincipio" id="HumedadOculto">
                                     <h3>Humedad</h3>
+                                    <p id="DatosObtenidos">${aBalizas[i].humedad}%</p>
                                 </div>
                                 <div class="divsDatos" id="LluviaOculto">
                                     <h3>Precipitación</h3>
+                                    <p id="DatosObtenidos">${aBalizas[i].precipitacion}mm=l/m²</p>
                                 </div>
                                 <div class="divsDatos" id="VientoOculto">
                                     <h3>Velocidad del Viento</h3>
+                                    <p id="DatosObtenidos">${aBalizas[i].viento}km/h</p>
                                 </div>
                             </div>`;
 
@@ -220,13 +151,96 @@ function RevisarLocalStorage() {
     document.getElementById("Contenido").innerHTML += sImprimirLocalStorage;
     Jquery();
 }
-ObtencionDeDatosAPI()
+
 function ObtencionDeDatosAPI() {
     fetch("https://localhost:5001/api/Tiempo")
         .then(response => response.json())
-        .then(datosTiempo => {
-            console.log(datosTiempo);
-            
+        .then(aBalizas => {
+            console.log(aBalizas);
+
+            //Creamos la balizas
+            for (var i = 0; i < aBalizas.length; i++) {
+                var Balizas = L.marker([aBalizas[i].gpxY, aBalizas[i].gpxX], { idMarcador: aBalizas[i].id }).addTo(Mapa);
+                Balizas.bindPopup(`${aBalizas[i].nombre}`);
+                Balizas.on("click", Agregar);
+                aMarcadores.push(Balizas);
+            }
+            //Funcion que agrega un div cuando se hace clic en un marcador
+            function Agregar(e) {
+                console.log("Es el this " + e);
+                var sImprimirDiv = "";
+
+                //Cogemos el nombre de las balizas
+                var sObtenerNombre = e.target.getPopup().getContent();
+                console.log(sObtenerNombre);
+
+                //Con el nombre cogemos el id
+                for (i = 0; i < aBalizas.length; i++) {
+                    if (sObtenerNombre == aBalizas[i].nombre) {
+                        var sObtenerID = aBalizas[i].id;
+                        break;
+                    }
+                }
+                //Comprobamos que el ID seleccionado no esta ya
+                if (aId.length < 4) {
+                    for (i = 0; i < aId.length; i++) {
+                        if (aId[i] == sObtenerID) {
+                            bExiste = true;
+                            break;
+                        }
+                        else {
+                            bExiste = false;
+                        }
+                    }
+                    /*
+                            for(i=0;i<Balizas.length;i++){
+                                if(Balizas[i]==sObtenerID){
+                                    Balizas[i].setIcon(BlackIcon);
+                                }
+                            }*/
+                    console.log(sObtenerID);
+
+                    //Si no existe imprimimos una tarjeta y añadimos al array de los IDs el nuevo
+                    if (!bExiste) {
+                        //Cambiamos el color
+                        e.target.setIcon(BlackIcon);
+                        aId.push(sObtenerID);
+                        //Añadimos al localstorage el array
+                        localStorage.IDs = JSON.stringify(aId);
+
+                        for (i = 0; i < aBalizas.length; i++) {
+                            if (aBalizas[i].id == sObtenerID) {
+                                var sID = aBalizas[i].id;
+                                sImprimirDiv += `<div class="tarjetas col" id="${sID}">
+                                <button type="button" class="btn-close btncerrar" aria-label="Close"></button>
+                                <h4>${aBalizas[i].nombre}</h4>
+                                <div id="contenedorDatos">
+                                    <div class="divsDatos MostrarPrincipio" id="TemperaturaOculto">
+                                        <h3>Temperatura</h3>
+                                        <p id="DatosObtenidos">${aBalizas[i].temperatura}°C</p>
+                                    </div>
+                                    <div class="divsDatos MostrarPrincipio" id="HumedadOculto">
+                                        <h3>Humedad</h3>
+                                        <p id="DatosObtenidos">${aBalizas[i].humedad}%</p>
+                                    </div>
+                                    <div class="divsDatos" id="LluviaOculto">
+                                        <h3>Precipitación</h3>
+                                        <p id="DatosObtenidos">${aBalizas[i].precipitacion}mm=l/m²</p>
+                                    </div>
+                                    <div class="divsDatos" id="VientoOculto">
+                                        <h3>Velocidad del Viento</h3>
+                                        <p id="DatosObtenidos">${aBalizas[i].viento}km/h</p>
+                                    </div>
+                                </div>
+                            </div>`;
+                            }
+                        }
+                        document.getElementById("Contenido").innerHTML += sImprimirDiv;
+                    }
+                }
+                Jquery();
+            }
+            RevisarLocalStorage(aBalizas);
         })
 };
 
