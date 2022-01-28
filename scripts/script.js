@@ -25,14 +25,50 @@ var BlueIcon = new L.Icon({
     popupAnchor: [1, -34],
     shadowSize: [41, 41]
 });
+
+var RedIcon = new L.Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+var YellowIcon = new L.Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+var GreenIcon = new L.Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
 ObtencionDeDatosAPI();
 
 
 
 
-function Jquery() {
+function Jquery(aBalizas) {
     //Apareceran al cargar la pagina
     $(".MostrarPrincipio").addClass("Mostrar");
+
+    //Desplegar/Ocultar el mapa
+    $(document).ready(function () {
+        $("#escondermapa").click(function () {
+            $("#map").slideToggle(750);
+            $("#colores").slideToggle(750);
+        });
+    });
+
     //Eliminar el div al hacer click en la x
     $(".btn-close").click(function (e) {
         var id = e.target.closest(".tarjetas").id;
@@ -51,7 +87,16 @@ function Jquery() {
         //Cambiamos el icono negro por el azul cuando se cierra la tarjeta
         for (i = 0; i < aMarcadores.length; i++) {
             if (aMarcadores[i].options.idMarcador == id) {
-                aMarcadores[i].setIcon(BlueIcon);
+                if (aBalizas[i].tipoEstacion == "BUOY") {
+                    aMarcadores[i].setIcon(RedIcon);
+                } else if (aBalizas[i].tipoEstacion == "METEOROLOGICAL") {
+                    aMarcadores[i].setIcon(BlueIcon);
+                } else if (aBalizas[i].tipoEstacion == "GAUGING") {
+                    aMarcadores[i].setIcon(YellowIcon);
+                } else {
+                    aMarcadores[i].setIcon(GreenIcon);
+                }
+                //aMarcadores[i].setIcon(BlueIcon);
                 console.log("Cambio");
             }
         }
@@ -100,11 +145,13 @@ function RevisarLocalStorage(aBalizas) {
     //Cogemos el nombre de la baliza con el id guardado en el storage
     for (i = 0; i < allaves.length; i++) {
         for (var j = 0; j < aBalizas.length; j++) {
-            if (aBalizas[j].Id == allaves[i]) {
-                aNombre[i] = aBalizas[j].Nombre;
+            if (aBalizas[j].id == allaves[i]) {
+                aNombre[i] = aBalizas[j].nombre;
+
             }
         }
     }
+
     //Lo añadimos al array de los ids
     for (i = 0; i < allaves.length; i++) {
         aId.push(allaves[i]);
@@ -117,39 +164,38 @@ function RevisarLocalStorage(aBalizas) {
             }
         }
     }
-    //Desplegar/Ocultar el mapa
-    $(document).ready(function () {
-        $("#escondermapa").click(function () {
-            $("#map").slideToggle(750);
-        });
-    });
+
     //Creamos las tarjetas segun el storage
     console.log(aId);
     for (i = 0; i < allaves.length; i++) {
-        sImprimirLocalStorage += `<div class="tarjetas col" id="${allaves[i]}">
-                                <button type="button" class="btn-close btncerrar" aria-label="Close"></button>
-                                <h4>${aBalizas[i].nombre}</h4>
-                                <div class="divsDatos MostrarPrincipio" id="TemperaturaOculto">
-                                    <h3>Temperatura</h3>
-                                    <p id="DatosObtenidos">${aBalizas[i].temperatura}°C</p>
-                                </div>
-                                <div class="divsDatos MostrarPrincipio" id="HumedadOculto">
-                                    <h3>Humedad</h3>
-                                    <p id="DatosObtenidos">${aBalizas[i].humedad}%</p>
-                                </div>
-                                <div class="divsDatos" id="LluviaOculto">
-                                    <h3>Precipitación</h3>
-                                    <p id="DatosObtenidos">${aBalizas[i].precipitacion}mm=l/m²</p>
-                                </div>
-                                <div class="divsDatos" id="VientoOculto">
-                                    <h3>Velocidad del Viento</h3>
-                                    <p id="DatosObtenidos">${aBalizas[i].viento}km/h</p>
-                                </div>
-                            </div>`;
+        for (j = 0; j < aBalizas.length; j++) {
+            if(aBalizas[j].id == allaves[i]){
+                sImprimirLocalStorage += `<div class="tarjetas col" id="${allaves[i]}">
+                                    <button type="button" class="btn-close btncerrar" aria-label="Close"></button>
+                                    <h4>${aBalizas[j].nombre}</h4>
+                                    <div class="divsDatos MostrarPrincipio" id="TemperaturaOculto">
+                                        <h3>Temperatura</h3>
+                                        <p id="DatosObtenidos">${aBalizas[j].temperatura} °C</p>
+                                    </div>
+                                    <div class="divsDatos MostrarPrincipio" id="HumedadOculto">
+                                        <h3>Humedad</h3>
+                                        <p id="DatosObtenidos">${aBalizas[j].humedad} %</p>
+                                    </div>
+                                    <div class="divsDatos" id="LluviaOculto">
+                                        <h3>Precipitación</h3>
+                                        <p id="DatosObtenidos">${aBalizas[j].precipitacion} mm=l/m²</p>
+                                    </div>
+                                    <div class="divsDatos" id="VientoOculto">
+                                        <h3>Velocidad del Viento</h3>
+                                        <p id="DatosObtenidos">${aBalizas[j].viento} km/h</p>
+                                    </div>
+                                </div>`;
+            }
 
+        }
     }
     document.getElementById("Contenido").innerHTML += sImprimirLocalStorage;
-    Jquery();
+    Jquery(aBalizas);
 }
 
 function ObtencionDeDatosAPI() {
@@ -163,6 +209,18 @@ function ObtencionDeDatosAPI() {
                 var Balizas = L.marker([aBalizas[i].gpxY, aBalizas[i].gpxX], { idMarcador: aBalizas[i].id }).addTo(Mapa);
                 Balizas.bindPopup(`${aBalizas[i].nombre}`);
                 Balizas.on("click", Agregar);
+
+
+                if (aBalizas[i].tipoEstacion == "BUOY") {
+                    Balizas.setIcon(RedIcon);
+                } else if (aBalizas[i].tipoEstacion == "METEOROLOGICAL") {
+                    Balizas.setIcon(BlueIcon);
+                } else if (aBalizas[i].tipoEstacion == "GAUGING") {
+                    Balizas.setIcon(YellowIcon);
+                } else {
+                    Balizas.setIcon(GreenIcon);
+                }
+
                 aMarcadores.push(Balizas);
             }
             //Funcion que agrega un div cuando se hace clic en un marcador
@@ -217,19 +275,19 @@ function ObtencionDeDatosAPI() {
                                 <div id="contenedorDatos">
                                     <div class="divsDatos MostrarPrincipio" id="TemperaturaOculto">
                                         <h3>Temperatura</h3>
-                                        <p id="DatosObtenidos">${aBalizas[i].temperatura}°C</p>
+                                        <p id="DatosObtenidos">${aBalizas[i].temperatura} °C</p>
                                     </div>
                                     <div class="divsDatos MostrarPrincipio" id="HumedadOculto">
                                         <h3>Humedad</h3>
-                                        <p id="DatosObtenidos">${aBalizas[i].humedad}%</p>
+                                        <p id="DatosObtenidos">${aBalizas[i].humedad} %</p>
                                     </div>
                                     <div class="divsDatos" id="LluviaOculto">
                                         <h3>Precipitación</h3>
-                                        <p id="DatosObtenidos">${aBalizas[i].precipitacion}mm=l/m²</p>
+                                        <p id="DatosObtenidos">${aBalizas[i].precipitacion} mm=l/m²</p>
                                     </div>
                                     <div class="divsDatos" id="VientoOculto">
                                         <h3>Velocidad del Viento</h3>
-                                        <p id="DatosObtenidos">${aBalizas[i].viento}km/h</p>
+                                        <p id="DatosObtenidos">${aBalizas[i].viento} km/h</p>
                                     </div>
                                 </div>
                             </div>`;
@@ -238,7 +296,7 @@ function ObtencionDeDatosAPI() {
                         document.getElementById("Contenido").innerHTML += sImprimirDiv;
                     }
                 }
-                Jquery();
+                Jquery(aBalizas);
             }
             RevisarLocalStorage(aBalizas);
         })
