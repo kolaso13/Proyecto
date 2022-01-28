@@ -220,4 +220,13 @@ function RevisarLocalStorage() {
     document.getElementById("Contenido").innerHTML += sImprimirLocalStorage;
     Jquery();
 }
+ObtencionDeDatosAPI()
+function ObtencionDeDatosAPI() {
+    fetch("https://localhost:5001/api/Tiempo")
+        .then(response => response.json())
+        .then(datosTiempo => {
+            console.log(datosTiempo);
+            
+        })
+};
 
