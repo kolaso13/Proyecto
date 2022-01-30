@@ -170,7 +170,7 @@ function ObtencionDeDatosAPI() {
             RevisarLocalStorage(aBalizas);
 
             var sImprimirSelect = `<select id="select" name="select">
-            <option value="none">Todos</option>
+            <option value="Todos">Todos</option>
             <option value="Bizkaia">Bizkaia</option>
             <option value="Gipuzkoa">Gipuzkoa</option>
             <option value="Álava">Álava</option>
@@ -184,7 +184,7 @@ function ObtencionDeDatosAPI() {
                     Mapa.removeLayer(i);
                 });
                 aMarcadores = [];
-                if (sProvinciaSeleccionada == "none") {
+                if (sProvinciaSeleccionada == "Todos") {
                     CrearBalizas();
                 } else {
                     for (let i = 0; i < aBalizas.length; i++) {
