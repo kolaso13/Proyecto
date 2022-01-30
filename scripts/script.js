@@ -168,71 +168,68 @@ function ObtencionDeDatosAPI() {
                 Jquery(aBalizas);
             }
             RevisarLocalStorage(aBalizas);
-
-            var sImprimirSelect = `<select id="select" name="select">
-            <option value="Todos">Todos</option>
-            <option value="Bizkaia">Bizkaia</option>
-            <option value="Gipuzkoa">Gipuzkoa</option>
-            <option value="Álava">Álava</option>
-            </select>
-            `;
-            document.getElementById("Provincias").innerHTML = sImprimirSelect;
-
-            $("select").on("change", function () {
-                var sProvinciaSeleccionada = document.getElementById("select").value;
-                aMarcadores.forEach(i => {
-                    Mapa.removeLayer(i);
-                });
-                aMarcadores = [];
-                if (sProvinciaSeleccionada == "Todos") {
-                    CrearBalizas();
-                } else {
-                    for (let i = 0; i < aBalizas.length; i++) {
-                        if (aBalizas[i].provincia == sProvinciaSeleccionada) {
-                            let Balizas = L.marker([aBalizas[i].gpxY, aBalizas[i].gpxX], { myId: aBalizas[i].id }).bindPopup(`${aBalizas[i].nombre}`).addTo(Mapa);
-                            Balizas.on("click", Agregar);
-                            if (aBalizas[i].tipoEstacion == "BUOY") {
-                                Balizas.setIcon(RedIcon);
-                            } else if (aBalizas[i].tipoEstacion == "METEOROLOGICAL") {
-                                Balizas.setIcon(BlueIcon);
-                            } else if (aBalizas[i].tipoEstacion == "GAUGING") {
-                                Balizas.setIcon(YellowIcon);
+            
+                        var sImprimirSelect = `<select id="select" name="select">
+                        <option value="Todos">Todos</option>
+                        <option value="Bizkaia">Bizkaia</option>
+                        <option value="Gipuzkoa">Gipuzkoa</option>
+                        <option value="Álava">Álava</option>
+                        </select>
+                        `;
+                        document.getElementById("Provincias").innerHTML = sImprimirSelect;
+            
+                        $("select").on("change", function () {
+                            var sProvinciaSeleccionada = document.getElementById("select").value;
+                            aMarcadores.forEach(i => {
+                                Mapa.removeLayer(i);
+                            });
+                            aMarcadores = [];
+                            if (sProvinciaSeleccionada == "Todos") {
+                                CrearBalizas();
                             } else {
-                                Balizas.setIcon(GreenIcon);
-                            }                            
-                            aMarcadores.push(Balizas);
-                        } else {
-                            let Balizas = L.marker([aBalizas[i].gpxY, aBalizas[i].gpxX], { myId: aBalizas[i].id }).bindPopup(`${aBalizas[i].nombre}`);
-                            if (aBalizas[i].tipoEstacion == "BUOY") {
-                                Balizas.setIcon(RedIcon);
-                            } else if (aBalizas[i].tipoEstacion == "METEOROLOGICAL") {
-                                Balizas.setIcon(BlueIcon);
-                            } else if (aBalizas[i].tipoEstacion == "GAUGING") {
-                                Balizas.setIcon(YellowIcon);
-                            } else {
-                                Balizas.setIcon(GreenIcon);
-                            }  
-                            aMarcadores.push(Balizas);
-                        }
-                    }
-                }
-            });
+                                for (let i = 0; i < aBalizas.length; i++) {
+                                    if (aBalizas[i].provincia == sProvinciaSeleccionada) {
+                                        let Balizas = L.marker([aBalizas[i].gpxY, aBalizas[i].gpxX], { myId: aBalizas[i].id }).bindPopup(`${aBalizas[i].nombre}`).addTo(Mapa);
+                                        Balizas.on("click", Agregar);
+                                        if (aBalizas[i].tipoEstacion == "BUOY") {
+                                            Balizas.setIcon(RedIcon);
+                                        } else if (aBalizas[i].tipoEstacion == "METEOROLOGICAL") {
+                                            Balizas.setIcon(BlueIcon);
+                                        } else if (aBalizas[i].tipoEstacion == "GAUGING") {
+                                            Balizas.setIcon(YellowIcon);
+                                        } else {
+                                            Balizas.setIcon(GreenIcon);
+                                        }
+                                        aMarcadores.push(Balizas);
+                                    } else {
+                                        let Balizas = L.marker([aBalizas[i].gpxY, aBalizas[i].gpxX], { myId: aBalizas[i].id }).bindPopup(`${aBalizas[i].nombre}`);
+                                        if (aBalizas[i].tipoEstacion == "BUOY") {
+                                            Balizas.setIcon(RedIcon);
+                                        } else if (aBalizas[i].tipoEstacion == "METEOROLOGICAL") {
+                                            Balizas.setIcon(BlueIcon);
+                                        } else if (aBalizas[i].tipoEstacion == "GAUGING") {
+                                            Balizas.setIcon(YellowIcon);
+                                        } else {
+                                            Balizas.setIcon(GreenIcon);
+                                        }
+                                        aMarcadores.push(Balizas);
+                                    }
+                                }
+                            }
+                        });
         })
 };
-
-
+$(document).ready(function () {
+    $("#escondermapa").on("click", function () {
+        $("#Provincias").slideToggle(750);
+        $("#map").slideToggle(750);
+        $("#colores").slideToggle(750);
+    });
+});
 function Jquery(aBalizas) {
+
     //Apareceran al cargar la pagina
     $(".MostrarPrincipio").addClass("Mostrar");
-
-    //Desplegar/Ocultar el mapa
-    $(document).ready(function () {
-        $("#escondermapa").click(function () {
-            $("#map").slideToggle(750);
-            $("#colores").slideToggle(750);
-            $("#Provincias").slideToggle(750);
-        });
-    });
 
     //Eliminar el div al hacer click en la x
     $(".btn-close").click(function (e) {
