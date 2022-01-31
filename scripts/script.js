@@ -5,7 +5,6 @@ var aId = new Array();
 var aMarcadores = new Array();
 var bExiste;
 var Mapa = L.map('map').setView([43.34578351332376, -1.7965434243182008], 11);
-
 L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(Mapa);
 
 var BlackIcon = new L.Icon({
@@ -54,173 +53,182 @@ var GreenIcon = new L.Icon({
 });
 ObtencionDeDatosAPI();
 
-
 function ObtencionDeDatosAPI() {
-    fetch("https://localhost:5001/api/Tiempo")
-        .then(response => response.json())
-        .then(aBalizas => {
-            console.log(aBalizas);
-            CrearBalizas();
-            function CrearBalizas() {
-                //Creamos la balizas
-                for (var i = 0; i < aBalizas.length; i++) {
-                    var Balizas = L.marker([aBalizas[i].gpxY, aBalizas[i].gpxX], { idMarcador: aBalizas[i].id }).addTo(Mapa);
-                    Balizas.bindPopup(`${aBalizas[i].nombre}`);
-                    Balizas.on("click", Agregar);
+
+    fetch("https://localhost:5001/api/Tiempo").then(response => response.json()).then(aBalizas => {
+        console.log("lo siguiente es aBalizas");
+        console.log(aBalizas);
+        CrearBalizas();
+        function CrearBalizas() {
+            //Creamos la balizas
+            for (var i = 0; i < aBalizas.length; i++) {
+                var Balizas = L.marker([aBalizas[i].gpxY, aBalizas[i].gpxX], { idMarcador: aBalizas[i].id, Provincia: aBalizas[i].provincia }).addTo(Mapa);
+                Balizas.bindPopup(`${aBalizas[i].nombre}`);
+                Balizas.on("click", Agregar);
 
 
-                    if (aBalizas[i].tipoEstacion == "BUOY") {
-                        Balizas.setIcon(RedIcon);
-                    } else if (aBalizas[i].tipoEstacion == "METEOROLOGICAL") {
-                        Balizas.setIcon(BlueIcon);
-                    } else if (aBalizas[i].tipoEstacion == "GAUGING") {
-                        Balizas.setIcon(YellowIcon);
-                    } else {
-                        Balizas.setIcon(GreenIcon);
-                    }
+                if (aBalizas[i].tipoEstacion == "BUOY") {
+                    Balizas.setIcon(RedIcon);
+                } else if (aBalizas[i].tipoEstacion == "METEOROLOGICAL") {
+                    Balizas.setIcon(BlueIcon);
+                } else if (aBalizas[i].tipoEstacion == "GAUGING") {
+                    Balizas.setIcon(YellowIcon);
+                } else {
+                    Balizas.setIcon(GreenIcon);
+                }
 
-                    aMarcadores.push(Balizas);
+                aMarcadores.push(Balizas);
+            }
+        }
+        //Funcion que agrega un div cuando se hace clic en un marcador
+        function Agregar(e) {
+            console.log("Es el this " + e);
+            var sImprimirDiv = "";
+
+            //Cogemos el nombre de las balizas
+            var sObtenerNombre = e.target.getPopup().getContent();
+            console.log(sObtenerNombre);
+
+            //Con el nombre cogemos el id
+            for (i = 0; i < aBalizas.length; i++) {
+                if (sObtenerNombre == aBalizas[i].nombre) {
+                    var sObtenerID = aBalizas[i].id;
+                    break;
                 }
             }
-            //Funcion que agrega un div cuando se hace clic en un marcador
-            function Agregar(e) {
-                console.log("Es el this " + e);
-                var sImprimirDiv = "";
-
-                //Cogemos el nombre de las balizas
-                var sObtenerNombre = e.target.getPopup().getContent();
-                console.log(sObtenerNombre);
-
-                //Con el nombre cogemos el id
-                for (i = 0; i < aBalizas.length; i++) {
-                    if (sObtenerNombre == aBalizas[i].nombre) {
-                        var sObtenerID = aBalizas[i].id;
+            //Comprobamos que el ID seleccionado no esta ya
+            if (aId.length < 4) {
+                for (i = 0; i < aId.length; i++) {
+                    if (aId[i] == sObtenerID) {
+                        bExiste = true;
                         break;
                     }
-                }
-                //Comprobamos que el ID seleccionado no esta ya
-                if (aId.length < 4) {
-                    for (i = 0; i < aId.length; i++) {
-                        if (aId[i] == sObtenerID) {
-                            bExiste = true;
-                            break;
-                        }
-                        else {
-                            bExiste = false;
-                        }
+                    else {
+                        bExiste = false;
                     }
-                    console.log(sObtenerID);
-                    //Si no existe imprimimos una tarjeta y añadimos al array de los IDs el nuevo
-                    if (!bExiste) {
-                        //Cambiamos el color
-                        e.target.setIcon(BlackIcon);
-                        aId.push(sObtenerID);
-                        //Añadimos al localstorage el array
-                        localStorage.IDs = JSON.stringify(aId);
+                }
+                console.log(sObtenerID);
+                //Si no existe imprimimos una tarjeta y añadimos al array de los IDs el nuevo
+                if (!bExiste) {
+                    //Cambiamos el color
+                    e.target.setIcon(BlackIcon);
+                    aId.push(sObtenerID);
+                    //Añadimos al localstorage el array
+                    localStorage.IDs = JSON.stringify(aId);
 
-                        for (i = 0; i < aBalizas.length; i++) {
-                            if (aBalizas[i].id == sObtenerID) {
-                                var sID = aBalizas[i].id;
-                                sImprimirDiv += `<div class="tarjetas col" id="${sID}">
+                    for (i = 0; i < aBalizas.length; i++) {
+                        if (aBalizas[i].id == sObtenerID) {
+                            var sID = aBalizas[i].id;
+                            sImprimirDiv += `<div class="tarjetas col" id="${sID}">
                                                     <button type="button" class="btn-close btncerrar" aria-label="Close"></button>
                                                     <h4>${aBalizas[i].nombre}</h4>
                                                     <div id="contenedorDatos">
                                                         <div class="divsDatos MostrarPrincipio" id="TemperaturaOculto">
                                                             <h3>Temperatura</h3>`;
-                                if (aBalizas[i].temperatura == "Sin datos") {
-                                    sImprimirDiv += `<p id="DatosObtenidos">${aBalizas[i].temperatura}</p>`;
-                                } else {
-                                    sImprimirDiv += `<p id="DatosObtenidos">${aBalizas[i].temperatura} °C</p>`;
-                                }
-                                sImprimirDiv += `</div>
+                            if (aBalizas[i].temperatura == "Sin datos") {
+                                sImprimirDiv += `<p id="DatosObtenidos">${aBalizas[i].temperatura}</p>`;
+                            } else {
+                                sImprimirDiv += `<p id="DatosObtenidos">${aBalizas[i].temperatura} °C</p>`;
+                            }
+                            sImprimirDiv += `</div>
                                                         <div class="divsDatos MostrarPrincipio" id="HumedadOculto">
                                                             <h3>Humedad</h3>`;
-                                if (aBalizas[i].humedad == "Sin datos") {
-                                    sImprimirDiv += `<p id="DatosObtenidos">${aBalizas[i].humedad}</p>`;
-                                } else {
-                                    sImprimirDiv += `<p id="DatosObtenidos">${aBalizas[i].humedad} %</p>`;
-                                }
-                                sImprimirDiv += `</div>
+                            if (aBalizas[i].humedad == "Sin datos") {
+                                sImprimirDiv += `<p id="DatosObtenidos">${aBalizas[i].humedad}</p>`;
+                            } else {
+                                sImprimirDiv += `<p id="DatosObtenidos">${aBalizas[i].humedad} %</p>`;
+                            }
+                            sImprimirDiv += `</div>
                                                         <div class="divsDatos" id="LluviaOculto">
                                                             <h3>Precipitación</h3>`;
-                                if (aBalizas[i].precipitacion == "Sin datos") {
-                                    sImprimirDiv += `<p id="DatosObtenidos">${aBalizas[i].precipitacion}</p>`;
-                                } else {
-                                    sImprimirDiv += `<p id="DatosObtenidos">${aBalizas[i].precipitacion} mm=l/m²</p>`;
-                                }
-                                sImprimirDiv += `</div>
+                            if (aBalizas[i].precipitacion == "Sin datos") {
+                                sImprimirDiv += `<p id="DatosObtenidos">${aBalizas[i].precipitacion}</p>`;
+                            } else {
+                                sImprimirDiv += `<p id="DatosObtenidos">${aBalizas[i].precipitacion} mm=l/m²</p>`;
+                            }
+                            sImprimirDiv += `</div>
                                                         <div class="divsDatos" id="VientoOculto">
                                                             <h3>Velocidad del Viento</h3>`;
-                                if (aBalizas[i].viento == "Sin datos") {
-                                    sImprimirDiv += `<p id="DatosObtenidos">${aBalizas[i].viento}</p>`;
-                                } else {
-                                    sImprimirDiv += `<p id="DatosObtenidos">${aBalizas[i].viento} km/h</p>`;
-                                }
-                                sImprimirDiv += `
+                            if (aBalizas[i].viento == "Sin datos") {
+                                sImprimirDiv += `<p id="DatosObtenidos">${aBalizas[i].viento}</p>`;
+                            } else {
+                                sImprimirDiv += `<p id="DatosObtenidos">${aBalizas[i].viento} km/h</p>`;
+                            }
+                            sImprimirDiv += `
                                                         </div>
                                                     </div>
                                                 </div>`;
-                            }
                         }
-                        document.getElementById("Contenido").innerHTML += sImprimirDiv;
                     }
+                    document.getElementById("Contenido").innerHTML += sImprimirDiv;
                 }
-                Jquery(aBalizas);
             }
-            RevisarLocalStorage(aBalizas);
-            
-                        var sImprimirSelect = `<select id="select" name="select">
+            Jquery(aBalizas);
+        }
+        var sImprimirSelect = `<select id="select" name="select">
                         <option value="Todos">Todos</option>
                         <option value="Bizkaia">Bizkaia</option>
                         <option value="Gipuzkoa">Gipuzkoa</option>
                         <option value="Álava">Álava</option>
                         </select>
                         `;
-                        document.getElementById("Provincias").innerHTML = sImprimirSelect;
-            
-                        $("select").on("change", function () {
-                            var sProvinciaSeleccionada = document.getElementById("select").value;
-                            aMarcadores.forEach(i => {
-                                Mapa.removeLayer(i);
-                            });
-                            aMarcadores = [];
-                            if (sProvinciaSeleccionada == "Todos") {
-                                CrearBalizas();
-                            } else {
-                                for (let i = 0; i < aBalizas.length; i++) {
-                                    if (aBalizas[i].provincia == sProvinciaSeleccionada) {
-                                        let Balizas = L.marker([aBalizas[i].gpxY, aBalizas[i].gpxX], { myId: aBalizas[i].id }).bindPopup(`${aBalizas[i].nombre}`).addTo(Mapa);
-                                        Balizas.on("click", Agregar);
-                                        if (aBalizas[i].tipoEstacion == "BUOY") {
-                                            Balizas.setIcon(RedIcon);
-                                        } else if (aBalizas[i].tipoEstacion == "METEOROLOGICAL") {
-                                            Balizas.setIcon(BlueIcon);
-                                        } else if (aBalizas[i].tipoEstacion == "GAUGING") {
-                                            Balizas.setIcon(YellowIcon);
-                                        } else {
-                                            Balizas.setIcon(GreenIcon);
-                                        }
-                                        aMarcadores.push(Balizas);
-                                    } else {
-                                        let Balizas = L.marker([aBalizas[i].gpxY, aBalizas[i].gpxX], { myId: aBalizas[i].id }).bindPopup(`${aBalizas[i].nombre}`);
-                                        if (aBalizas[i].tipoEstacion == "BUOY") {
-                                            Balizas.setIcon(RedIcon);
-                                        } else if (aBalizas[i].tipoEstacion == "METEOROLOGICAL") {
-                                            Balizas.setIcon(BlueIcon);
-                                        } else if (aBalizas[i].tipoEstacion == "GAUGING") {
-                                            Balizas.setIcon(YellowIcon);
-                                        } else {
-                                            Balizas.setIcon(GreenIcon);
-                                        }
-                                        aMarcadores.push(Balizas);
-                                    }
-                                }
-                            }
-                        });
-        })
+        document.getElementById("Provincias").innerHTML = sImprimirSelect;
+        console.log(aMarcadores);
+        $("select").on("change", function () {
+            var sProvinciaSeleccionada = document.getElementById("select").value;
+            aMarcadores.forEach(i => {
+                Mapa.removeLayer(i);
+            });
+            aMarcadores = [];
+            if (sProvinciaSeleccionada == "Todos") {
+                CrearBalizas();
+            } else {
+                for (let i = 0; i < aBalizas.length; i++) {
+                    if (aBalizas[i].provincia == sProvinciaSeleccionada) {
+                        let Balizas = L.marker([aBalizas[i].gpxY, aBalizas[i].gpxX], { idMarcador: aBalizas[i].id }).bindPopup(`${aBalizas[i].nombre}`).addTo(Mapa);
+                        Balizas.on("click", Agregar);
+                        if (aBalizas[i].tipoEstacion == "BUOY") {
+                            Balizas.setIcon(RedIcon);
+                        } else if (aBalizas[i].tipoEstacion == "METEOROLOGICAL") {
+                            Balizas.setIcon(BlueIcon);
+                        } else if (aBalizas[i].tipoEstacion == "GAUGING") {
+                            Balizas.setIcon(YellowIcon);
+                        } else {
+                            Balizas.setIcon(GreenIcon);
+                        }
+                        aMarcadores.push(Balizas);
+
+                    } else {
+                        let Balizas = L.marker([aBalizas[i].gpxY, aBalizas[i].gpxX], { idMarcador: aBalizas[i].id }).bindPopup(`${aBalizas[i].nombre}`);
+                        if (aBalizas[i].tipoEstacion == "BUOY") {
+                            Balizas.setIcon(RedIcon);
+                        } else if (aBalizas[i].tipoEstacion == "METEOROLOGICAL") {
+                            Balizas.setIcon(BlueIcon);
+                        } else if (aBalizas[i].tipoEstacion == "GAUGING") {
+                            Balizas.setIcon(YellowIcon);
+                        } else {
+                            Balizas.setIcon(GreenIcon);
+                        }
+                        aMarcadores.push(Balizas);
+
+                    }
+                }
+
+            }
+            //Cambiamos la baliza a color negro
+            for (i = 0; i < aId.length; i++) {
+                for (j = 0; j < aMarcadores.length; j++) {
+                    if (aMarcadores[j].options.idMarcador == aId[i]) {
+                        aMarcadores[j].setIcon(BlackIcon);
+                    }
+                }
+            }
+        });
+        RevisarLocalStorage(aBalizas);
+    })
 };
 $(document).ready(function () {
-    $("#escondermapa").on("click", function () {
+    $("svg").on("click", function () {
         $("#Provincias").slideToggle(750);
         $("#map").slideToggle(750);
         $("#colores").slideToggle(750);
@@ -274,7 +282,7 @@ function Jquery(aBalizas) {
     //Hacemos los filtros draggables
     $(function () {
         //El icono volvera a su posicion
-        $(".icono").draggable({ revert: "valid", revert: true });
+        $(".icono").draggable({ helper: "clone" });
 
         //Al soltar los iconos en las tarjetas se añade el parametro correspondiente
         $(".tarjetas").droppable({
@@ -298,17 +306,22 @@ function Jquery(aBalizas) {
 
 //Funcion que  mira en el storage para crear tarjetas al crear la pagina
 function RevisarLocalStorage(aBalizas) {
+    document.getElementById("Contenido").innerHTML="";
     var sImprimirLocalStorage = "";
     var aNombre = new Array();
+    if (localStorage.IDs == undefined) {
+        IDs = [];
+        var allaves= new Array();
+    } else {
+        //Cogemos el array del localstorage
+        var allaves = JSON.parse(localStorage.IDs);
+    }
 
-    //Cogemos el array del localstorage
-    var allaves = JSON.parse(localStorage.IDs);
     //Cogemos el nombre de la baliza con el id guardado en el storage
     for (i = 0; i < allaves.length; i++) {
         for (var j = 0; j < aBalizas.length; j++) {
             if (aBalizas[j].id == allaves[i]) {
                 aNombre[i] = aBalizas[j].nombre;
-
             }
         }
     }
