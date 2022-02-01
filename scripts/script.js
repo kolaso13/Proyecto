@@ -65,8 +65,8 @@ function ObtencionDeDatosAPI() {
                 var Balizas = L.marker([aBalizas[i].gpxY, aBalizas[i].gpxX], { idMarcador: aBalizas[i].id, Provincia: aBalizas[i].provincia }).addTo(Mapa);
                 Balizas.bindPopup(`${aBalizas[i].nombre}`);
                 Balizas.on("click", Agregar);
-
-
+                
+                
                 if (aBalizas[i].tipoEstacion == "BUOY") {
                     Balizas.setIcon(RedIcon);
                 } else if (aBalizas[i].tipoEstacion == "METEOROLOGICAL") {
@@ -90,7 +90,7 @@ function ObtencionDeDatosAPI() {
             console.log(sObtenerNombre);
 
             //Con el nombre cogemos el id
-            for (i = 0; i < aBalizas.length; i++) {
+            for (var i = 0; i < aBalizas.length; i++) {
                 if (sObtenerNombre == aBalizas[i].nombre) {
                     var sObtenerID = aBalizas[i].id;
                     break;
@@ -98,7 +98,7 @@ function ObtencionDeDatosAPI() {
             }
             //Comprobamos que el ID seleccionado no esta ya
             if (aId.length < 4) {
-                for (i = 0; i < aId.length; i++) {
+                for (var i = 0; i < aId.length; i++) {
                     if (aId[i] == sObtenerID) {
                         bExiste = true;
                         break;
@@ -116,7 +116,7 @@ function ObtencionDeDatosAPI() {
                     //Añadimos al localstorage el array
                     localStorage.IDs = JSON.stringify(aId);
 
-                    for (i = 0; i < aBalizas.length; i++) {
+                    for (var i = 0; i < aBalizas.length; i++) {
                         if (aBalizas[i].id == sObtenerID) {
                             var sID = aBalizas[i].id;
                             sImprimirDiv += `<div class="tarjetas col" id="${sID}">
@@ -183,7 +183,7 @@ function ObtencionDeDatosAPI() {
             if (sProvinciaSeleccionada == "Todos") {
                 CrearBalizas();
             } else {
-                for (let i = 0; i < aBalizas.length; i++) {
+                for (var i = 0; i < aBalizas.length; i++) {
                     if (aBalizas[i].provincia == sProvinciaSeleccionada) {
                         let Balizas = L.marker([aBalizas[i].gpxY, aBalizas[i].gpxX], { idMarcador: aBalizas[i].id }).bindPopup(`${aBalizas[i].nombre}`).addTo(Mapa);
                         Balizas.on("click", Agregar);
@@ -216,8 +216,8 @@ function ObtencionDeDatosAPI() {
 
             }
             //Cambiamos la baliza a color negro
-            for (i = 0; i < aId.length; i++) {
-                for (j = 0; j < aMarcadores.length; j++) {
+            for (var i = 0; i < aId.length; i++) {
+                for (var j = 0; j < aMarcadores.length; j++) {
                     if (aMarcadores[j].options.idMarcador == aId[i]) {
                         aMarcadores[j].setIcon(BlackIcon);
                     }
@@ -244,7 +244,7 @@ function Jquery(aBalizas) {
         var id = e.target.closest(".tarjetas").id;
 
         //for para eliminar del array donde guardamos los IDs el id de la tarjeta que hemos cerrado
-        for (i = 0; i < aId.length; i++) {
+        for (var i = 0; i < aId.length; i++) {
             if (aId[i] == id) {
                 aId.splice(i, 1);
                 console.log("Borrado");
@@ -255,7 +255,7 @@ function Jquery(aBalizas) {
         localStorage.IDs = JSON.stringify(aId);
 
         //Cambiamos el icono negro por el azul cuando se cierra la tarjeta
-        for (i = 0; i < aMarcadores.length; i++) {
+        for (var i = 0; i < aMarcadores.length; i++) {
             if (aMarcadores[i].options.idMarcador == id) {
                 if (aBalizas[i].tipoEstacion == "BUOY") {
                     aMarcadores[i].setIcon(RedIcon);
@@ -281,7 +281,7 @@ function Jquery(aBalizas) {
 
     //Hacemos los filtros draggables
     $(function () {
-        //El icono volvera a su posicion
+        //Se crea un clone del icono y no vuelve a su posicion original
         $(".icono").draggable({ helper: "clone" });
 
         //Al soltar los iconos en las tarjetas se añade el parametro correspondiente
@@ -289,13 +289,14 @@ function Jquery(aBalizas) {
             drop: function (event, ui) {
                 var idFiltros = ui.draggable.attr("id").substring(1);
                 console.log(idFiltros);
-
+                //Si se arrastra la papelera borramos todo de la tarjeta
                 if (idFiltros == "Papelera") {
                     $(this).find(`#TemperaturaOculto`).removeClass("Mostrar");
                     $(this).find(`#HumedadOculto`).removeClass("Mostrar");
                     $(this).find(`#LluviaOculto`).removeClass("Mostrar");
                     $(this).find(`#VientoOculto`).removeClass("Mostrar");
                 }
+                //Si se arrastra cualquier otro se muestra si no esta ya
                 else {
                     $(this).find(`#${idFiltros}Oculto`).addClass("Mostrar");
                 }
@@ -318,7 +319,7 @@ function RevisarLocalStorage(aBalizas) {
     }
 
     //Cogemos el nombre de la baliza con el id guardado en el storage
-    for (i = 0; i < allaves.length; i++) {
+    for (var i = 0; i < allaves.length; i++) {
         for (var j = 0; j < aBalizas.length; j++) {
             if (aBalizas[j].id == allaves[i]) {
                 aNombre[i] = aBalizas[j].nombre;
@@ -327,12 +328,12 @@ function RevisarLocalStorage(aBalizas) {
     }
 
     //Lo añadimos al array de los ids
-    for (i = 0; i < allaves.length; i++) {
+    for (var i = 0; i < allaves.length; i++) {
         aId.push(allaves[i]);
     }
     //Cambiamos la baliza a color negro
-    for (i = 0; i < aId.length; i++) {
-        for (j = 0; j < aMarcadores.length; j++) {
+    for (var i = 0; i < aId.length; i++) {
+        for (var j = 0; j < aMarcadores.length; j++) {
             if (aMarcadores[j].options.idMarcador == aId[i]) {
                 aMarcadores[j].setIcon(BlackIcon);
             }
@@ -341,8 +342,8 @@ function RevisarLocalStorage(aBalizas) {
 
     //Creamos las tarjetas segun el storage
     console.log(aId);
-    for (i = 0; i < allaves.length; i++) {
-        for (j = 0; j < aBalizas.length; j++) {
+    for (var i = 0; i < allaves.length; i++) {
+        for (var j = 0; j < aBalizas.length; j++) {
             if (aBalizas[j].id == allaves[i]) {
                 sImprimirLocalStorage += `<div class="tarjetas col" id="${allaves[i]}">
                                             <button type="button" class="btn-close btncerrar" aria-label="Close"></button>
