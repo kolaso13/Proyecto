@@ -415,7 +415,6 @@ function RevisarLocalStorage(aBalizas) {
     }
 
     //Creamos las tarjetas segun el storage
-    console.log(aId);
     for (var i = 0; i < allaves.length; i++) {
         for (var j = 0; j < aBalizas.length; j++) {
             if (aBalizas[j].id == allaves[i]) {
