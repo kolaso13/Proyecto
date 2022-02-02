@@ -50,7 +50,31 @@ var GreenIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
-document.getElementById("btnAcceso").addEventListener("click", Acceso);
+document.getElementById("btnAcceso").addEventListener("click", Acceso)
+document.getElementById("btnCerrarSesion").addEventListener("click", CerrarSesion);
+Token();
+
+function Token(){
+    fetch("https://localhost:5001/api/Tiempo", {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem("JWTtoken")}`,
+        }
+    }).then(response => {
+      if (response.ok) {
+        $("#TrozoMapa").css("display", "block");
+        ObtencionDeDatosAPI();
+      }else{
+        $("#TrozoLogin").css("display", "block");
+      }
+    })
+}
+
+
+function CerrarSesion(){
+    localStorage.removeItem("JWTtoken");
+    location.reload();
+}
 
 function Acceso() {
   fetch("https://localhost:5001/Users/authenticate", {
@@ -93,7 +117,7 @@ function ObtencionDeDatosAPI() {
                 var Balizas = L.marker([aBalizas[i].gpxY, aBalizas[i].gpxX], { idMarcador: aBalizas[i].id, Provincia: aBalizas[i].provincia }).addTo(Mapa);
                 Balizas.bindPopup(`${aBalizas[i].nombre}`);
                 Balizas.on("click", Agregar);
-
+                HoverPopUp(Balizas);
 
                 if (aBalizas[i].tipoEstacion == "BUOY") {
                     Balizas.setIcon(RedIcon);
@@ -224,6 +248,7 @@ function ObtencionDeDatosAPI() {
                         } else {
                             Balizas.setIcon(GreenIcon);
                         }
+                        HoverPopUp(Balizas);
                         aMarcadores.push(Balizas);
 
                     } else {
@@ -237,12 +262,13 @@ function ObtencionDeDatosAPI() {
                         } else {
                             Balizas.setIcon(GreenIcon);
                         }
+                        HoverPopUp(Balizas);
                         aMarcadores.push(Balizas);
-
                     }
                 }
 
             }
+            
             //Cambiamos la baliza a color negro
             for (var i = 0; i < aId.length; i++) {
                 for (var j = 0; j < aMarcadores.length; j++) {
@@ -255,15 +281,23 @@ function ObtencionDeDatosAPI() {
         RevisarLocalStorage(aBalizas);
     })
 };
-$(document).ready(function () {
-    $("svg").on("click", function () {
-        $("#Provincias").slideToggle(750);
-        $("#map").slideToggle(750);
-        $("#colores").slideToggle(750);
+function HoverPopUp(Balizas){
+    Balizas.on("mouseover", function (e) {
+        this.openPopup();
     });
-});
-function Jquery(aBalizas) {
 
+    Balizas.on("mouseout", function (e) {
+        this.closePopup();
+    });
+}
+function Jquery(aBalizas) {
+    $(document).ready(function () {
+        $("svg").on("click", function () {
+            $("#Provincias").slideToggle(750);
+            $("#map").slideToggle(750);
+            $("#colores").slideToggle(750);
+        });
+    });
     //Apareceran al cargar la pagina
     $(".MostrarPrincipio").addClass("Mostrar");
 
@@ -416,6 +450,4 @@ function RevisarLocalStorage(aBalizas) {
     document.getElementById("Contenido").innerHTML += sImprimirLocalStorage;
     Jquery(aBalizas);
 }
-
-
 
