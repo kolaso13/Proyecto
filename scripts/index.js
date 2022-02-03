@@ -58,7 +58,7 @@ document.getElementById("btnCerrarSesion").addEventListener("click", CerrarSesio
 Token();
 function Token(){
     //Hacemos un fetch a la API del tiempo con el JWToken que tengamos 
-    fetch("https://localhost:5001/api/Tiempo", {
+    fetch("http://10.10.17.121:5000/api/Tiempo", {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem("JWTtoken")}`,
@@ -83,7 +83,7 @@ function CerrarSesion(){
 
 //Funcion para Iniciar sesion con los datos introducidos en el formulario
 function Acceso() {
-  fetch("https://localhost:5001/Users/authenticate", {
+  fetch("http://10.10.17.121:5000/Users/authenticate", {
       method: "POST",
       headers: {
           'Content-Type': 'application/json',
@@ -109,7 +109,7 @@ function Acceso() {
 }
 //Funcion que obtiene los datos de la API del tiempo
 function ObtencionDeDatosAPI() {
-    fetch("https://localhost:5001/api/Tiempo", {
+    fetch("http://10.10.17.121:5000/api/Tiempo", {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem("JWTtoken")}`,
