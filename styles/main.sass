@@ -10,6 +10,7 @@ $SombraOscura: #B0B0B0
 
 body
     background-color: $gris1
+
 #Titulo
     font-size: 36px
 
@@ -17,11 +18,17 @@ body
     display: flex
     flex-direction: row
     background-color: $gris1
+
 #btnCerrarSesion
     margin-left: auto
+
 #TrozoLogin
     display: none
-    
+
+#Error
+    color: #ff4b4b
+    display: none
+
 #TrozoMapa
     display: none
 
@@ -33,6 +40,7 @@ body
     margin: 60px
     border-radius: 10px
     box-shadow: 10px 10px 10px $grisParaSombra
+
     #ParteArriba
         background-color: $Blanco
         padding: 10px
@@ -52,8 +60,10 @@ body
         background-color: $girs2
         box-shadow: 10px 10px 10px $SombraDos
         border-radius: 10px
+
         h1
             width: 99%
+
         svg
             margin-left: auto
             margin-top: 15px
@@ -67,29 +77,36 @@ body
     text-align: center
     margin-top: 100px
     margin-right: 40px
+
     #fijo
         border-radius: 10px
         position: fixed
         background-color: white
         margin-right: 40px
         box-shadow: 10px 10px 10px $grisParaSombra
+
         #filtro
             margin-top: 20px
             margin-bottom: 20px
+
             img
                 width: 20%
                 height: auto
+
 #Provincias
     margin-left: 175px
     margin-top: 10px
+
     select
         box-shadow: 10px 10px 10px $grisParaSombra
         border-radius: 10px
         width: 125px
         height:50px
         font-size: 20px
+
         option
             font-size: 20px
+
 #map
     height: 500px
     width: 80%
@@ -102,6 +119,7 @@ body
     display: flex
     flex-direction: row
     justify-content: center
+
     p
         width: 150px
         margin-left: 10px
@@ -120,15 +138,18 @@ body
     width: 100%
     box-shadow: 10px 10px 10px $SombraOscura
     margin-top: 10px
+
     h4
         margin: 10px
         font-size: 20px
+
     h3
         margin: 5px
 
     #DatosObtenidos
         font-size: 40px
         margin: 10px
+
     .divsDatos
         display: none
 
@@ -140,5 +161,6 @@ body
         float: right
         margin-right: 5px
         margin-top: 5px
+
 #footer
-    margin-top: 706px
+    margin-top: 746px
