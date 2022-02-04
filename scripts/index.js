@@ -495,16 +495,12 @@ function RevisarLocalStorage(aBalizas) {
     for (i = 0; i < allaves.length; i++) {
         if (allaves[i][1] == "true") {
             $(`#${allaves[i][0]}`).find("#TemperaturaOculto").addClass("Mostrar");
-            console.log("Hola");
         } if (allaves[i][2] == "true") {
             $(`#${allaves[i][0]}`).find("#HumedadOculto").addClass("Mostrar");
-            console.log("Hola1");
         } if (allaves[i][3] == "true") {
             $(`#${allaves[i][0]}`).find("#LluviaOculto").addClass("Mostrar");
-            console.log("Hola2");
         } if (allaves[i][4] == "true") {
             $(`#${allaves[i][0]}`).find("#VientoOculto").addClass("Mostrar");
-            console.log("Hola2");
 
         }
     }
